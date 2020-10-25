@@ -26,7 +26,14 @@ module.exports = class WikiEditor {
         return this.requester.getSubreddit(this.subreddit).getWikiPage(page).fetch();
     }
     /* [Edit Wiki Page] */
-    async editPage(page, text, reason, previousRevision) {
+    async editPage(page, text) {
+        return this.requester.getSubreddit(this.subreddit).getWikiPage(page).edit({
+            text: text,
+            reason: 'test'
+        });
+    }
+    /* [Edit Wiki Page] */
+    async editPageWithReason(page, text, reason, previousRevision) {
         return this.requester.getSubreddit(this.subreddit).getWikiPage(page).edit({
             text: text,
             reason: reason,

@@ -1,12 +1,12 @@
 const Snoowrap = require('../config/snoo.config');
-const MentionBot = require('../service/MentionBot');
+
 const SubMonitorBot = require('../service/SubMonitorBot');
-const MultiSubMonitorBot = require('../service/MultiSubMonitorBot');
+
 const CommandBot = require('../service/CommandBot');
-const WikiEditor = require('../service/WikiEditor');
-const NannyBot = require('../service/NannyBot');
+
 const PriorityQueue = require('../util/PriorityQueue');
 const Command = require('../util/Command');
+const WikiEditor = require('../service/WikiEditor');
 /*
     [Snoolicious RTS] - Snoolicious Reddit Tool Suite
     
@@ -35,18 +35,13 @@ module.exports = class Reddit {
 
         /* [Services] */
 
-        /* [MentionBot Service] */
-        this.mentions = new MentionBot(this.requester);
         /* [SubMonitorBot Service] */
         this.submissions = new SubMonitorBot(this.requester);
-        /* [MultiSubMonitor Service] */
-        this.multis = new MultiSubMonitorBot(this.requester);
         /* [CommandBot Service] */
         this.commands = new CommandBot(this.requester);
-        /* [WikiEditor Service] */
+
         this.wikieditor = new WikiEditor(this.requester);
-        /* [UserFollower Service] */
-        this.nannybot = new NannyBot(this.requester);
+
 
         /* 
             [Tasks]
@@ -54,21 +49,6 @@ module.exports = class Reddit {
                 - All items are dequeued from their original bot service queues and into this priority queue
          */
         this.tasks = new PriorityQueue();
-    }
-    /*
-        [Get Mentions]
-            - Asks MentionBot Service to get mentions
-            - The first time calling getMentions, will run assignFirst
-            - Dequeues the mention queue into tasks queue
-            - Returns the tasks queue
-    */
-    async getMentions(priority) {
-        const mentions = await this.mentions.getMentions();
-        // Dequeue all the mentions into the priority queue
-        while (mentions && !mentions.isEmpty()) {
-            this.tasks.enqueue([mentions.dequeue(), priority]);
-        }
-        return this.tasks;
     }
     /*
         [Get Submissions]
@@ -85,20 +65,6 @@ module.exports = class Reddit {
         return this.tasks;
     }
     /*
-        [Get Multis]
-            - Asks MultiSubMonitor Service to get submissions from all defined subreddits
-            - Dequeues the submissions queue into tasks queue
-            - Returns the tasks queue
-    */
-    async getMultis(priority) {
-        const multis = await this.multis.getSubmissions();
-        // Dequeue all the submissions into the priority queue
-        while (multis && !multis.isEmpty()) {
-            this.tasks.enqueue([multis.dequeue(), priority]);
-        }
-        return this.tasks;
-    }
-    /*
         [Get Commands]
             - Asks ThreadFollower Service to get commands
             - Dequeues the command queue into tasks queue
@@ -109,20 +75,6 @@ module.exports = class Reddit {
         // Dequeue all the commands into the priority queue
         while (commands && !commands.isEmpty()) {
             this.tasks.enqueue([commands.dequeue(), priority]);
-        }
-        return this.tasks;
-    }
-    /*
-        [Get User]
-            - Asks UserFollower Service to get a users latest posts
-            - Dequeues the command queue into tasks queue
-            - Returns the tasks queue
-    */
-    async nannyUser(user,priority) {
-        const posts = await this.nannybot.getUserPosts(user);
-        // Dequeue all the commands into the priority queue
-        while (posts && !posts.isEmpty()) {
-            this.tasks.enqueue([posts.dequeue(), priority]);
         }
         return this.tasks;
     }

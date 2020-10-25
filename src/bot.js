@@ -1,6 +1,11 @@
-const dotenv = require('dotenv').config();
-const Database = require('./data/sqlite.config');
-// const db = new Database('saved');
+const dotenv = require('dotenv');
+const result = dotenv.config();
+ 
+if (result.error) {
+  throw result.error;
+}
+ 
+console.log(result.parsed);
 const colors = require('colors');
 const Snoolicious = require('./lib/Snoolicious');
 const snoolicious = new Snoolicious();
@@ -37,8 +42,13 @@ async function handleCommand(task) {
                 console.log("Command was help!".green, task.command);
                 await snoolicious.getRequester().getComment(task.item.id).reply("sending help!");
                 break;
+            case 'editwiki':
+                console.log("editing the wiki...");
+                await snoolicious.wikieditor.editPage("userdirectory", 'test text');
+                break;
             default:
                 console.log("Command was not understood! the command: ".red, task.command);
+                break;
         }
         // Save the item so snoolicious won't process it again.
         console.log("saving");
@@ -88,7 +98,7 @@ const INTERVAL = (process.env.INTERVAL * 1000);
 async function run() {
         console.log("Running Test!!!");
         await snoolicious.getCommands(1);
-        await snoolicious.getSubmissions(3);
+        // await snoolicious.getSubmissions(3);
 
         console.log("APP CHECKING SIZE OF TASKS QUEUE: ".america, snoolicious.tasks.size());
         await snoolicious.queryTasks(handleCommand, handleSubmission);
