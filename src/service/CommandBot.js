@@ -41,7 +41,7 @@ module.exports = class CommandBot {
     async assignFirst() {
         console.log("getting thread: ", this.threadId);
         // Get the thread and set suggested sort to new
-        const thread = await this.requester.getSubmission(this.threadId).setSuggestedSort('new')
+        const thread = await this.requester.getSubmission(this.threadId)
             .fetch();
         // If no comments exist, make the first comment to avoid errors.
         if (thread.comments.length === 0) {
