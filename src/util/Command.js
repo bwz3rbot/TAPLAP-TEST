@@ -52,7 +52,6 @@ module.exports = class Command {
 
     */
     test(string) {
-        console.log(`testing this string: "${string}"`);
 
         let placeholder = new String(string);
         try {
@@ -61,7 +60,6 @@ module.exports = class Command {
         } catch (err) {
             string = placeholder;
         }
-        console.log("checking command...");
         const cmd = command(string);
         if (cmd) {
 

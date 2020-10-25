@@ -92,7 +92,6 @@ module.exports = class Reddit {
             // If not a submission
             if (task.item.body) {
                 const command = new Command().test(task.item.body);
-                console.log("Testing command: ", command);
                 if (command) { // If the item received was a command, return the command, the item, and priority
                     const T = {
                         command: command,

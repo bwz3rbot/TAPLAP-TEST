@@ -81,7 +81,8 @@ async function handleSubmission(task) {
     const saved = await snoolicious.requester.getSubmission(task.item.id).saved;
     console.log("was already saved: ", saved);
     if (!saved) {
-        await snoolicious.requester.getSubmission().reply("Beep Boop!");
+        console.log("replying to submission!");
+        await snoolicious.requester.getSubmission(task.item.id).reply("Beep Boop!");
 
         console.log("saving");
         await snoolicious.requester.getSubmission(task.item.id).save();
@@ -98,7 +99,7 @@ const INTERVAL = (process.env.INTERVAL * 1000);
 async function run() {
         console.log("Running Test!!!");
         await snoolicious.getCommands(1);
-        // await snoolicious.getSubmissions(3);
+        await snoolicious.getSubmissions(3);
 
         console.log("APP CHECKING SIZE OF TASKS QUEUE: ".america, snoolicious.tasks.size());
         await snoolicious.queryTasks(handleCommand, handleSubmission);
